@@ -44,32 +44,32 @@ namespace MoviesBackend.Controllers
     [HttpGet("{id}", Name = "GetMovies")]
     public IActionResult GetById(long id)
     {
-      var item = _context.Movies.FirstOrDefault(t => t.Id == id);
-      if (item == null)
+      var movie = _context.Movies.FirstOrDefault(t => t.Id == id);
+      if (movie == null)
       {
         return NotFound();
       }
-      return new ObjectResult(item);
+      return new ObjectResult(movie);
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] Movie item)
+    public IActionResult Create([FromBody] Movie movie)
     {
-      if (item == null)
+      if (movie == null)
       {
         return BadRequest();
       }
 
-      _context.Movies.Add(item);
+      _context.Movies.Add(movie);
       _context.SaveChanges();
 
-      return CreatedAtRoute("GetMovies", new { id = item.Id }, item);
+      return CreatedAtRoute("GetMovies", new { id = movie.Id }, movie);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(long id, [FromBody] Movie item)
+    public IActionResult Update(long id, [FromBody] Movie newMovie)
     {
-      if (item == null || item.Id != id)
+      if (newMovie == null || newMovie.Id != id)
       {
         return BadRequest();
       }
@@ -80,7 +80,14 @@ namespace MoviesBackend.Controllers
         return NotFound();
       }
 
-      movie.Title = item.Title;
+      movie.Title = newMovie.Title;
+      movie.Overview = newMovie.Overview;
+      movie.RuntimeMinutes = newMovie.RuntimeMinutes;
+      movie.ImdbId = newMovie.ImdbId;
+      movie.UpdatedTime = newMovie.UpdatedTime;
+      movie.ReleaseDate = newMovie.ReleaseDate;
+      movie.UsDigitalReleaseDate = newMovie.UsDigitalReleaseDate;
+      movie.UsPhysicalReleaseDate = newMovie.UsPhysicalReleaseDate;
 
       _context.Movies.Update(movie);
       _context.SaveChanges();
