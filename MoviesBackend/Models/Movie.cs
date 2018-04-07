@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace MoviesBackend.Models
 {
-  public class TodoItem
+  public class Movie
   {
     public long Id { get; set; }
-    public string Name { get; set; }
-    public bool IsComplete { get; set; }
+    public string Title { get; set; }
   }
 }

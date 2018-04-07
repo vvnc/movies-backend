@@ -10,31 +10,31 @@ using MoviesBackend.Models;
 namespace MoviesBackend.Controllers
 {
   [Route("api/[controller]")]
-  public class TodoController : Controller
+  public class MoviesController : Controller
   {
-    private readonly TodoContext _context;
+    private readonly MoviesContext _context;
 
-    public TodoController(TodoContext context)
+    public MoviesController(MoviesContext context)
     {
       _context = context;
 
-      if (_context.TodoItems.Count() == 0)
+      if (_context.Movies.Count() == 0)
       {
-        _context.TodoItems.Add(new TodoItem { Name = "Item1" });
+        _context.Movies.Add(new Movie { Title = "Item1" });
         _context.SaveChanges();
       }
     }
 
     [HttpGet]
-    public IEnumerable<TodoItem> GetAll()
+    public IEnumerable<Movie> GetAll()
     {
-      return _context.TodoItems.ToList();
+      return _context.Movies.ToList();
     }
 
-    [HttpGet("{id}", Name = "GetTodo")]
+    [HttpGet("{id}", Name = "GetMovies")]
     public IActionResult GetById(long id)
     {
-      var item = _context.TodoItems.FirstOrDefault(t => t.Id == id);
+      var item = _context.Movies.FirstOrDefault(t => t.Id == id);
       if (item == null)
       {
         return NotFound();
@@ -43,37 +43,36 @@ namespace MoviesBackend.Controllers
     }
 
     [HttpPost]
-    public IActionResult Create([FromBody] TodoItem item)
+    public IActionResult Create([FromBody] Movie item)
     {
       if (item == null)
       {
         return BadRequest();
       }
 
-      _context.TodoItems.Add(item);
+      _context.Movies.Add(item);
       _context.SaveChanges();
 
-      return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+      return CreatedAtRoute("GetMovies", new { id = item.Id }, item);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(long id, [FromBody] TodoItem item)
+    public IActionResult Update(long id, [FromBody] Movie item)
     {
       if (item == null || item.Id != id)
       {
         return BadRequest();
       }
 
-      var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
-      if (todo == null)
+      var movie = _context.Movies.FirstOrDefault(t => t.Id == id);
+      if (movie == null)
       {
         return NotFound();
       }
 
-      todo.IsComplete = item.IsComplete;
-      todo.Name = item.Name;
+      movie.Title = item.Title;
 
-      _context.TodoItems.Update(todo);
+      _context.Movies.Update(movie);
       _context.SaveChanges();
       return new NoContentResult();
     }
@@ -81,13 +80,13 @@ namespace MoviesBackend.Controllers
     [HttpDelete("{id}")]
     public IActionResult Delete(long id)
     {
-      var todo = _context.TodoItems.FirstOrDefault(t => t.Id == id);
-      if (todo == null)
+      var movie = _context.Movies.FirstOrDefault(t => t.Id == id);
+      if (movie == null)
       {
         return NotFound();
       }
 
-      _context.TodoItems.Remove(todo);
+      _context.Movies.Remove(movie);
       _context.SaveChanges();
       return new NoContentResult();
     }

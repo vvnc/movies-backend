@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MoviesBackend.Models
 {
-  public class TodoContext : DbContext
+  public class MoviesContext : DbContext
   {
-    public TodoContext(DbContextOptions<TodoContext> options)
+    public MoviesContext(DbContextOptions<MoviesContext> options)
         : base(options)
     {
     }
 
-    public DbSet<TodoItem> TodoItems { get; set; }
+    public DbSet<Movie> Movies { get; set; }
   }
 }
