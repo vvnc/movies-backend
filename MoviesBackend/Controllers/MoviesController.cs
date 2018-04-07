@@ -20,7 +20,17 @@ namespace MoviesBackend.Controllers
 
       if (_context.Movies.Count() == 0)
       {
-        _context.Movies.Add(new Movie { Title = "Item1" });
+        _context.Movies.Add(new Movie
+        {
+          Title = "Test Movie",
+          Overview = "This is the default movie that is created automatically when the database is first initialized",
+          RuntimeMinutes = 90,
+          ImdbId = 42,
+          UpdatedTime = DateTime.Now,
+          ReleaseDate = DateTime.Now.AddDays(1.0),
+          UsDigitalReleaseDate = DateTime.Now.AddDays(10.0),
+          UsPhysicalReleaseDate = DateTime.Now.AddDays(20.0)
+        });
         _context.SaveChanges();
       }
     }
