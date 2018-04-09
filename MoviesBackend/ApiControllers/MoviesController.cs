@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using MoviesBackend.Models;
 
-namespace MoviesBackend.Controllers
+namespace MoviesBackend.ApiControllers
 {
   [Route("api/[controller]")]
   public class MoviesController : Controller
