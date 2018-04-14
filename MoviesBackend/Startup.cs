@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 using MoviesBackend.Models;
+using MoviesBackend.Services;
 
 namespace MoviesBackend
 {
@@ -37,6 +38,8 @@ namespace MoviesBackend
       services.AddIdentity<IdentityUser, IdentityRole>()
           .AddEntityFrameworkStores<MoviesContext>()
           .AddDefaultTokenProviders();
+
+      services.AddTransient<IMessageService, FileMessageService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
