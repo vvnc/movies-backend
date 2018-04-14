@@ -38,6 +38,10 @@ namespace MoviesBackend
       services.AddIdentity<IdentityUser, IdentityRole>()
           .AddEntityFrameworkStores<MoviesContext>()
           .AddDefaultTokenProviders();
+      services.Configure<IdentityOptions>(options =>
+       {
+         options.SignIn.RequireConfirmedEmail = true;
+       });
 
       services.AddTransient<IMessageService, FileMessageService>();
     }
