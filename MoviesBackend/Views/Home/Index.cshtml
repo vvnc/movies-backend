@@ -7,7 +7,10 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-  <p>User @User.Identity.Name is signed in. <a href="/Account/Logout">Logout</a> </p>
+  <p>User @User.Identity.Name is signed in.</p>
+  <form asp-controller="Account" asp-action="Logout" method="post">
+    <input type="submit" value="Logout"/>
+  </form>
 
 }
 else
