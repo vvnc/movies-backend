@@ -46,7 +46,9 @@ public class AccountController : Controller
     if (!userCreationResult.Succeeded)
     {
       foreach (var error in userCreationResult.Errors)
+      {
         ModelState.AddModelError(string.Empty, error.Description);
+      }
       return View();
     }
 
@@ -59,12 +61,33 @@ public class AccountController : Controller
         id = newUser.Id,
         token = emailConfirmationToken
       },
-      Request.Scheme);
+      Request.Scheme
+    );
 
     await _messageService.Send(
       email,
-      "Verify your email", $"Click <a href=\"{tokenVerificationUrl}\">here</a> to verify your email");
+      "Verify your email", $"Click <a href=\"{tokenVerificationUrl}\">here</a> to verify your email"
+    );
 
     return Content("Check your email for a verification link");
+  }
+
+  public async Task<IActionResult> VerifyEmail(string id, string token)
+  {
+    var user = await _userManager.FindByIdAsync(id);
+    if (user == null)
+    {
+      throw new InvalidOperationException();
+    }
+    var emailConfirmationResult = await _userManager.ConfirmEmailAsync(user, token);
+    if (!emailConfirmationResult.Succeeded)
+    {
+      return Content(
+        emailConfirmationResult.Errors
+          .Select(error => error.Description)
+          .Aggregate((allErrors, error) => allErrors += ", " + error));
+    }
+
+    return Content("Email confirmed, you can now log in");
   }
 }
