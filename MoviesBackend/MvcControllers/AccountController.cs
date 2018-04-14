@@ -125,4 +125,70 @@ public class AccountController : Controller
 
     return Redirect("~/");
   }
+
+  public IActionResult ForgotPassword()
+  {
+    return View();
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> ForgotPassword(string email)
+  {
+    var user = await _userManager.FindByEmailAsync(email);
+    if (user == null)
+    {
+      return Content("Check your email for a password reset link");
+    }
+
+    var passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+    var passwordResetUrl = Url.Action(
+      "ResetPassword",
+      "Account",
+      new
+      {
+        id = user.Id,
+        token = passwordResetToken
+      },
+      Request.Scheme);
+
+    await _messageService.Send(
+      email,
+      "Password reset", $"Click <a href=\"" + passwordResetUrl + "\">here</a> to reset your password"
+    );
+
+    return Content("Check your email for a password reset link");
+  }
+
+  public IActionResult ResetPassword(string id, string token)
+  {
+    return View();
+  }
+
+  [HttpPost]
+  public async Task<IActionResult> ResetPassword(string id, string token, string password, string repassword)
+  {
+    var user = await _userManager.FindByIdAsync(id);
+    if (user == null)
+    {
+      throw new InvalidOperationException();
+    }
+
+    if (password != repassword)
+    {
+      ModelState.AddModelError(string.Empty, "Passwords do not match");
+      return View();
+    }
+
+    var resetPasswordResult = await _userManager.ResetPasswordAsync(user, token, password);
+    if (!resetPasswordResult.Succeeded)
+    {
+      foreach (var error in resetPasswordResult.Errors)
+      {
+        ModelState.AddModelError(string.Empty, error.Description);
+      }
+      return View();
+    }
+
+    return Content("Password updated");
+  }
 }
