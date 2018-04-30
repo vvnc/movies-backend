@@ -44,7 +44,9 @@ namespace MoviesBackend.ApiControllers
       Claim[] claims = new Claim[]
       {
         new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email)
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+        new Claim(JwtRegisteredClaimNames.Exp, $"{new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds()}"),
+        new Claim(JwtRegisteredClaimNames.Nbf, $"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}")
       };
 
       string jwtSecret = Environment.GetEnvironmentVariable(JWT_SECRET_ENV_VAR);
