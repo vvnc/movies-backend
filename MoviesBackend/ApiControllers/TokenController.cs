@@ -18,7 +18,7 @@ namespace MoviesBackend.ApiControllers
   public class TokenController : Controller
   {
     private readonly UserManager<IdentityUser> _userManager;
-    private const string JWT_SECRET_ENV_VAR = "MOVIES_JWT_SECRET_KEY";
+    public const string JWT_SECRET_ENV_VAR = "MOVIES_JWT_SECRET_KEY";
 
     public TokenController(UserManager<IdentityUser> userManager)
     {
