@@ -43,7 +43,7 @@ namespace MoviesBackend
          options.SignIn.RequireConfirmedEmail = true;
        });
 
-      services.AddTransient<IMessageService, FileMessageService>();
+      services.AddTransient<IMessageService, SendGridMessageService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
