@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 using MoviesBackend.Models;
 using MoviesBackend.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using MoviesBackend.ApiControllers;
+using MoviesBackend.Exceptions;
 
 namespace MoviesBackend
 {
@@ -30,7 +34,33 @@ namespace MoviesBackend
     public void ConfigureServices(IServiceCollection services)
     {
       //services.AddDbContext<MoviesContext>(opt => opt.UseInMemoryDatabase("Movies"));
+
       services.AddMvc();
+
+      string jwtSecret = Environment.GetEnvironmentVariable(TokenController.JWT_SECRET_ENV_VAR);
+      if (jwtSecret == null)
+      {
+        throw new JwtException("Couldn't find JWT secret key environment variable: " +
+          TokenController.JWT_SECRET_ENV_VAR);
+      }
+
+      services.AddAuthentication(options =>
+      {
+        options.DefaultAuthenticateScheme = "Jwt";
+        options.DefaultChallengeScheme = "Jwt";
+      })
+      .AddJwtBearer("Jwt", jwtBearerOptions =>
+      {
+        jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+        {
+          ValidateIssuerSigningKey = true,
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+          ValidateIssuer = false,
+          ValidateAudience = false,
+          ValidateLifetime = true, //validate the expiration and not before values in the token
+          ClockSkew = TimeSpan.FromMinutes(5) //5 minute tolerance for the expiration date
+        };
+      });
 
       services.AddDbContext<MoviesContext>(options =>
         options.UseSqlite("Data Source=movies.sqlite",
