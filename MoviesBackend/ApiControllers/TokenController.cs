@@ -28,10 +28,14 @@ namespace MoviesBackend.ApiControllers
     [HttpPost]
     public async Task<IActionResult> Create(string email, string password)
     {
-      IdentityUser user = await _userManager.FindByEmailAsync(email);
-      if(user == null)
+      if (email == null || password == null)
       {
-        return BadRequest();
+        return Unauthorized();
+      }
+      IdentityUser user = await _userManager.FindByEmailAsync(email);
+      if (user == null)
+      {
+        return Unauthorized();
       }
 
       // TODO: check if user is priveledged to have a tokens
@@ -50,7 +54,7 @@ namespace MoviesBackend.ApiControllers
       };
 
       string jwtSecret = Environment.GetEnvironmentVariable(JWT_SECRET_ENV_VAR);
-      if(jwtSecret == null)
+      if (jwtSecret == null)
       {
         throw new JwtException($"Couldn't find JWT secret key environment variable: ${JWT_SECRET_ENV_VAR}");
       }
