@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using MoviesBackend.Models;
+using MoviesBackend.Utils;
 
 namespace MoviesBackend.ApiControllers
 {
   [Route("api/[controller]")]
-  [Authorize(AuthenticationSchemes = "Jwt")]
+  [Authorize(AuthenticationSchemes = "Jwt", Roles = Roles.ADMIN)]
   public class MoviesController : Controller
   {
     private readonly MoviesContext _context;
