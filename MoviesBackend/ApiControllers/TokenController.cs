@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MoviesBackend.Exceptions;
 
+using MoviesBackend.Utils;
+
 namespace MoviesBackend.ApiControllers
 {
   [Produces("application/json")]
@@ -40,17 +42,20 @@ namespace MoviesBackend.ApiControllers
 
       // TODO: check if user is priveledged to have a tokens
 
-      return new ObjectResult(GenerateToken(user));
+      return new ObjectResult(await GenerateToken(user));
     }
 
-    private string GenerateToken(IdentityUser user)
+    private async Task<string> GenerateToken(IdentityUser user)
     {
+      bool isAdmin = await _userManager.IsInRoleAsync(user, Roles.ADMIN);
+      bool isUser = await _userManager.IsInRoleAsync(user, Roles.USER);
       Claim[] claims = new Claim[]
       {
         new Claim(ClaimTypes.Name, user.UserName),
         new Claim(JwtRegisteredClaimNames.Email, user.Email),
         new Claim(JwtRegisteredClaimNames.Exp, $"{new DateTimeOffset(DateTime.Now.AddDays(1)).ToUnixTimeSeconds()}"),
-        new Claim(JwtRegisteredClaimNames.Nbf, $"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}")
+        new Claim(JwtRegisteredClaimNames.Nbf, $"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}"),
+        new Claim(ClaimTypes.Role, isAdmin ? Roles.ADMIN : isUser ? Roles.USER : Roles.NONE)
       };
 
       string jwtSecret = Environment.GetEnvironmentVariable(JWT_SECRET_ENV_VAR);

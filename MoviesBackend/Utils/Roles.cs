@@ -9,5 +9,6 @@ namespace MoviesBackend.Utils
   {
     public const string ADMIN = "ADMIN";
     public const string USER = "USER";
+    public const string NONE = "NONE";
   }
 }
